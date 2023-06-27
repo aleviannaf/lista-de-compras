@@ -1,7 +1,7 @@
 // src/app.ts
 import express, { json, Application, Request, Response } from "express";
-import { createList, deleteItemList, deleteList, requestAllList , requestList} from "./logic";
-import { checkIdList,  validateDataMiddleware,  validateListMiddleware } from "./middleware";
+import { createList, deleteItemList, deleteList, requestAllList , requestList, updateItem} from "./logic";
+import { checkIdList,  validateDataMiddleware,  validateItemMiddleware,  validateListMiddleware } from "./middleware";
 
 
 const app: Application = express();
@@ -13,6 +13,7 @@ app.get("/purchaseList", requestAllList)
 app.get("/purchaseList/:id", checkIdList, requestList)
 app.delete("/purchaseList/:id", checkIdList, deleteList)
 app.delete("/purchaseList/:id/:name", checkIdList, deleteItemList)
+app.patch("/purchaseList/:id/:name",checkIdList, validateItemMiddleware, updateItem)
 
 
 const PORT: number = 3000;
