@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import { List } from "./database";
-import { IListRequest, ItemLIst } from "./interfaces";
+import { ItemLIst } from "./interfaces";
 
 const checkIdList = (request: Request, response: Response, next: NextFunction): Response | void => {
     const id = parseInt(request.params.id)
@@ -21,34 +21,32 @@ const checkIdList = (request: Request, response: Response, next: NextFunction): 
 
 
 const validateDataMiddleware = (request: Request, response: Response, next: NextFunction): Response | void => {
-    const camposObrigatorios = ['name', 'quantity']
-    const camposEntrada = request.body.data
+    const camposObrigatorios = ['name', 'quantity'];
+    const data = request.body.data;
 
-    //const teste = camposEntrada.filter(campos => !camposObrigatorios.includes(campos))
+    const camposFaltantes = data.reduce((faltando: string[], item: ItemLIst) => {
+        const camposExtras = Object.keys(item).filter(campo => !camposObrigatorios.includes(campo));
+        return [...faltando, ...camposExtras];
+    }, []);
 
-    console.log(camposEntrada)
-    const camposExtras = camposEntrada.map((item:ItemLIst)=>{
-        let campo = Object.keys(item)
-    }) 
-
-    if (camposExtras.length > 0) {
-        const camposExtrasString = camposExtras.join(', ');
-        return response.status(400).json({ message: `2Requierd keys are: ${camposExtrasString}` })
+    if (camposFaltantes.length > 0) {
+        const camposObrigatoriaString = camposObrigatorios.join(', ');
+        return response.status(400).json({ message: `Requierd keys are: ${camposObrigatoriaString}` });
     }
 
-    return next()
+    return next();
 }
+
 
 const validateListMiddleware = (request: Request, response: Response, next: NextFunction): Response | void => {
     const camposObrigatorios = ['listName', 'data'];
     const camposEntrada = Object.keys(request.body);
 
-    //console.log(camposEntrada)
     const camposExtras = camposEntrada.filter(campo => !camposObrigatorios.includes(campo));
 
     if (camposExtras.length > 0) {
-        const camposExtrasString = camposExtras.join(', ');
-        return response.status(400).json({ message: `Requierd keys are: ${camposExtrasString}` })
+        let camposObrigatoriasString = camposObrigatorios.join(', ');
+        return response.status(400).json({ message: `Requierd keys are : ${camposObrigatoriasString}` })
     }
 
     return next()

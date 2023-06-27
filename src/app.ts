@@ -1,14 +1,14 @@
 // src/app.ts
 import express, { json, Application, Request, Response } from "express";
 import { createList, deleteItemList, deleteList, requestAllList , requestList} from "./logic";
-import { checkIdList,  validateListMiddleware } from "./middleware";
+import { checkIdList,  validateDataMiddleware,  validateListMiddleware } from "./middleware";
 
 
 const app: Application = express();
 app.use(json());
 
 
-app.post("/purchaseList", validateListMiddleware, createList )
+app.post("/purchaseList", validateListMiddleware, validateDataMiddleware, createList )
 app.get("/purchaseList", requestAllList)
 app.get("/purchaseList/:id", checkIdList, requestList)
 app.delete("/purchaseList/:id", checkIdList, deleteList)
