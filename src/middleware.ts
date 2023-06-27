@@ -19,6 +19,19 @@ const checkIdList = (request: Request, response: Response, next: NextFunction): 
 
 }
 
+const validateItemMiddleware = (request: Request, response: Response, next: NextFunction): Response | void => {
+    const camposObrigatorios = ['name', 'quantity'];
+    const camposEntrada = Object.keys(request.body);
+
+    const camposExtras = camposEntrada.filter(campo => !camposObrigatorios.includes(campo));
+
+    if (camposExtras.length > 0) {
+        let camposObrigatoriasString = camposObrigatorios.join(', ');
+        return response.status(400).json({ message: `Requierd keys are : ${camposObrigatoriasString}` })
+    }
+
+    return next()
+}
 
 const validateDataMiddleware = (request: Request, response: Response, next: NextFunction): Response | void => {
     const camposObrigatorios = ['name', 'quantity'];
@@ -52,4 +65,4 @@ const validateListMiddleware = (request: Request, response: Response, next: Next
     return next()
 }
 
-export { checkIdList, validateDataMiddleware, validateListMiddleware }
+export { checkIdList, validateDataMiddleware, validateListMiddleware, validateItemMiddleware }
