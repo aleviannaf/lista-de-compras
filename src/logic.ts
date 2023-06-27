@@ -50,6 +50,25 @@ const deleteList = (request: Request, response: Response): Response => {
     return response.status(204).send()
 }
 
+const updateItem = (request: Request, response: Response): Response =>{
+    const indexList = parseInt(response.locals.list.indexList)
+    const name = request.params.name
+    const newItem = request.body
+ 
+    const indexItem = List[indexList].data.findIndex(item => item.name == name)
+
+    if (indexItem == -1) {
+        return response.status(404).json({ message: `List with item \"${name}\" does not exist` })
+    }
+
+    List[indexList].data[indexItem] = {
+        ... List[indexList].data[indexItem],
+        ...newItem
+
+    }
+
+    return response.status(200).json(List[indexList].data[indexItem])
+}
 
 
-export { createList, requestAllList, requestList, deleteItemList, deleteList }
+export { createList, requestAllList, requestList, deleteItemList, deleteList, updateItem }
